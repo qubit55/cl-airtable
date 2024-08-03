@@ -1,4 +1,4 @@
-# Cl-Airtable
+# cl-airtable
 
 ## Installation
 
