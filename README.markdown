@@ -9,9 +9,10 @@ git clone https://github.com/qubit55/cl-airtable.git .
 
 ## Usage
 ```
-(ql:quickload '(cl-airtable arrow-macros))
+(ql:quickload '(cl-airtable arrow-macros shasht))
 (use-package :cl-airtable)
 (:import-from :arrow-macros #:->)
+(:import-from :shasht #:read-json)
 
 ;; Define your airtable base
 (defparameter *airtable*
@@ -32,7 +33,11 @@ git clone https://github.com/qubit55/cl-airtable.git .
            :sort #(("field-1" "asc") ("field-2" "desc"))
            :filter-by-formula (format nil "FIND(\"~A\" , {field-1})" "abc")
            :page-size 18
-           :offset nil))
+           :offset nil)
+   (read-json)
+   (extract-records))
+
+
 ```
 
 ## Author
