@@ -20,13 +20,13 @@ git clone https://github.com/qubit55/cl-airtable.git
     "This is the airtable base.")
 
 ;; Define the table
-(defparameter *some-tabel*
+(defparameter *some-table*
   (-> *airtable*
     (table "table-id-or-name"))
   "This table holds some info.")
 
-;; Query *some-tabel*
-(-> *some-tabel*
+;; Query *some-table*
+(-> *some-table*
    (select :fields #("field-1" "field-2" "field-3")
            :max-records 10
            :sort #(("field-1" "asc") ("field-2" "desc"))
