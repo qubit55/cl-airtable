@@ -18,7 +18,6 @@
    #:create))
 
 (in-package :cl-airtable)
-
 (named-readtables:in-readtable :interpol-syntax)
 
 (defun extract-records
