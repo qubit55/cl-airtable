@@ -2,10 +2,13 @@
 
 ## Installation
 
+```
 cd ~/quicklisp/local-projects/
 git clone https://github.com/qubit55/cl-airtable.git
+```
 
 ## Usage
+```
 (ql:quickload '(cl-airtable arrow-macros))
 (use-package :cl-airtable)
 (:import-from :arrow-macros #:->)
@@ -22,7 +25,7 @@ git clone https://github.com/qubit55/cl-airtable.git
     (table "table-id-or-name"))
   "This table holds some info.")
 
-;; Query the table
+;; Query *some-tabel*
 (-> *some-tabel*
    (select :fields #("field-1" "field-2" "field-3")
            :max-records 10
@@ -30,7 +33,7 @@ git clone https://github.com/qubit55/cl-airtable.git
            :filter-by-formula (format nil "FIND(\"~A\" , {field-1})" "abc")
            :page-size 18
            :offset nil))
-
+```
 
 ## Author
 
