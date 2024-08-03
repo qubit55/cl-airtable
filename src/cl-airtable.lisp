@@ -72,37 +72,50 @@
                      :base-id (base-struct-base-id base)
                      :table-id-or-name table-id-or-name))
 
-(defun add-max-records (content n)
+(defun add-to-content
+    (content parameter value)
+  "Add parameter and its value to the content of the request"
   (cond ((null n) content)
-        ((search "maxRecords" (format nil "~A" content)) content)
-        (t (append content `(("maxRecords" . ,n))))))
+        ((search parameter (format nil "~A" content)) content)
+        (t (append content `((,parameter . ,n))))))
+
+(defun add-max-records (content n)
+  (add-to-content content "maxRecords" n))
+  ;; (cond ((null n) content)
+  ;;       ((search "maxRecords" (format nil "~A" content)) content)
+  ;;       (t (append content `(("maxRecords" . ,n))))))
 
 (defun add-sort (content fields)
-  (cond ((null fields) content)
-        ((search "sort" (format nil "~A" content)) content)
-        (t (append content `(("sort" . ,fields))))))
+  (add-to-content content "sort" fields))
+  ;; (cond ((null fields) content)
+  ;;       ((search "sort" (format nil "~A" content)) content)
+  ;;       (t (append content `(("sort" . ,fields))))))
 
 (defun add-fields (content fields)
-  (cond ((null fields) content)
-        ((search "fields" (format nil "~A" content)) content)
-        (t (append content `(("fields" . ,fields))))))
+  (add-to-content content "fields" fields))
+  ;; (cond ((null fields) content)
+  ;;       ((search "fields" (format nil "~A" content)) content)
+  ;;       (t (append content `(("fields" . ,fields))))))
 
 (defun add-formula (content formula)
-  (cond ((null formula) content)
-        ((search "filterByFormula" (format nil "~A" content)) content)
-        (t (append content `(("filterByFormula" . ,formula))))))
+  (add-to-content content "filterByFormula" formula))
+  ;; (cond ((null formula) content)
+  ;;       ((search "filterByFormula" (format nil "~A" content)) content)
+  ;;       (t (append content `(("filterByFormula" . ,formula))))))
 
 (defun add-page-size
     (content page-size)
-  (cond ((null page-size) content)
-        ((search "pageSize" (format nil "~A" content)) content)
-        (t (append content `(("pageSize" . ,page-size))))))
+  (add-to-content content "pageSize" page-size))
+  ;; (cond ((null page-size) content)
+  ;;       ((search "pageSize" (format nil "~A" content)) content)
+  ;;       (t (append content `(("pageSize" . ,page-size))))))
 
 (defun add-offset
     (content offset)
-  (cond ((null offset) content)
-        ((search "offset" (format nil "~A" content)) content)
-        (t (append content `(("offset" . ,offset))))))
+  (add-to-content content "offset" offset))
+  ;; (cond ((null offset) content)
+  ;;       ((search "offset" (format nil "~A" content)) content)
+  ;;       (t (append content `(("offset" . ,offset))))))
 
 (defun format-sort-fields
     (xs)
