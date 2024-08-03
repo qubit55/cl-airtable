@@ -11,6 +11,9 @@
   (:import-from :serapeum
 		#:dict)
   (:export
+   #:airtable
+   #:base
+   #:table
    #:select
    #:create))
 
