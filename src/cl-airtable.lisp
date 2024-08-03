@@ -115,7 +115,23 @@
   (add-to-content content "offset" offset))
   ;; (cond ((null offset) content)
   ;;       ((search "offset" (format nil "~A" content)) content)
-  ;;       (t (append content `(("offset" . ,offset))))))
+;;       (t (append content `(("offset" . ,offset))))))
+
+(defun add-view
+    (content view)
+  (add-to-content content "view" view))
+
+(defun add-cell-format
+    (content cell-format)
+  (add-to-content content "cellFormat" cell-format))
+
+(defun add-time-zone
+    (content time-zone)
+  (add-to-content content "timeZone" time-zone))
+
+(defun add-user-locale
+    (content user-locale)
+  (add-to-content content "userLocale" user-locale))
 
 (defun format-sort-fields
     (xs)
@@ -124,7 +140,18 @@
        xs))
 
 (defun select
-    (table &key fields sort filter-by-formula max-records page-size offset)
+    (table
+     &key
+       fields
+       sort
+       filter-by-formula
+       max-records
+       page-size
+       offset
+       view
+       cell-format
+       time-zone
+       user-locale)
   (bind ((key (table-struct-key table))
          (base-id (table-struct-base-id table))
          (table-id-or-name (table-struct-table-id-or-name table))
@@ -137,7 +164,10 @@
               (add-fields fields)
               (add-formula filter-by-formula)
               (add-page-size page-size)
-              (add-offset offset))))
+              (add-offset offset)
+	      (add-view view)
+	      (add-time-zone time-zone)
+	      (add-user-locale user-locale))))
     (dex:post url
 	      :bearer-auth key
 	      :headers '(("content-type" . "application/json"))
