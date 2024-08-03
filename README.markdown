@@ -4,7 +4,7 @@
 
 ```
 cd ~/quicklisp/local-projects/
-git clone https://github.com/qubit55/cl-airtable.git
+git clone https://github.com/qubit55/cl-airtable.git .
 ```
 
 ## Usage
