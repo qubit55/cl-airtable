@@ -14,6 +14,9 @@
    #:airtable
    #:base
    #:table
+   #:extract-records
+   #:extract-offset
+   #:extract-fields
    #:select
    #:create))
 
