@@ -104,30 +104,30 @@
 (defun format-sort-fields
     (xs)
   (map 'vector
-      (lambda (x) (list (cons "field" (car x)) (cons "direction" (car (cdr x)))))
-      xs))
+       (lambda (x) (list (cons "field" (car x)) (cons "direction" (car (cdr x)))))
+       xs))
 
 (defun select
     (table &key fields sort filter-by-formula max-records page-size offset)
-  (let* ((key (table-struct-key table))
+  (bind ((key (table-struct-key table))
          (base-id (table-struct-base-id table))
          (table-id-or-name (table-struct-table-id-or-name table))
          (url #?"https://api.airtable.com/v0/${base-id}/${table-id-or-name}/listRecords")
          (sort-fields (format-sort-fields sort))
          (content
           (-> nil
-            (add-max-records max-records)
-            (add-sort sort-fields)
-            (add-fields fields)
-            (add-formula filter-by-formula)
-            (add-page-size page-size)
-            (add-offset offset))))
+              (add-max-records max-records)
+              (add-sort sort-fields)
+              (add-fields fields)
+              (add-formula filter-by-formula)
+              (add-page-size page-size)
+              (add-offset offset))))
     (dex:post url
-      :bearer-auth key
-      :headers '(("content-type" . "application/json"))
-      :content (write-json* content
-                            :stream nil
-                            :alist-as-object t))))
+	      :bearer-auth key
+	      :headers '(("content-type" . "application/json"))
+	      :content (write-json* content
+				    :stream nil
+				    :alist-as-object t))))
 
 (defun create
     (table &key records)
