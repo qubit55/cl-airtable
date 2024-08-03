@@ -37,6 +37,18 @@ git clone https://github.com/qubit55/cl-airtable.git .
    (read-json)
    (extract-records))
 
+;; Or in one go
+(-> (airtable :key "airtable-key")
+   (base "base-id-or-name")
+   (table "table-id-or-name")
+   (select :fields #("field-1" "field-2" "field-3")
+           :max-records 10
+           :sort #(("field-1" "asc") ("field-2" "desc"))
+           :filter-by-formula (format nil "FIND(\"~A\" , {field-1})" "abc")
+           :page-size 18
+           :offset nil)
+   (read-json)
+   (extract-records))
 
 ```
 
