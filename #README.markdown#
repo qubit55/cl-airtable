@@ -22,7 +22,7 @@ git clone https://github.com/qubit55/cl-airtable.git
     (table "table-id-or-name"))
   "This table holds some info.")
 
-;; Query the table
+;; Query *some-tabel*
 (-> *some-tabel*
    (select :fields #("field-1" "field-2" "field-3")
            :max-records 10
