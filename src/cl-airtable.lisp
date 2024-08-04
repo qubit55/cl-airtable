@@ -5,11 +5,13 @@
   (:import-from :arrow-macros
 		#:-> #:->>)
   (:import-from :shasht
-		#:read-json #:write-json*)
+		#:read-json #:write-json* #:write-json)
   (:import-from :metabang-bind
 		#:bind)
   (:import-from :serapeum
 		#:dict)
+  (:import-from :alexandria
+		#:copy-hash-table)
   (:export
    #:airtable
    #:base
@@ -196,12 +198,23 @@
 	      :headers '(("content-type" . "application/json"))
 	      :content content)))
 
+(defun add-to-create-content
+    (content parameter value)
+  (bind ((content-copy (copy-hash-table content)))
+    (cond ((null value) content)
+          (t (setf (gethash parameter content-copy) value)))
+    content-copy))
+
 (defun build-create-content
-    (&key records)
+    (&key records return-fields-by-field-id typecast)
   (write-json*
-	   (dict "records"
-		 (map 'vector (lambda (x) (dict "fields" x)) records))
-	   :stream nil))
+   (-> (dict)
+       (add-to-create-content "records"
+	(cond ((null records) nil)
+	      (t (map 'vector (lambda (x) (dict "fields" x)) records))))
+       (add-to-create-content "returnFieldsByFieldId" return-fields-by-field-id)
+       (add-to-create-content "typecast" typecast))
+   :stream nil))
 
 (defun create
     (table &key records)

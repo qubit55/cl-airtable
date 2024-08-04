@@ -9,6 +9,7 @@
 	       #:serapeum
                #:arrow-macros
 	       #:metabang-bind
+	       #:alexandria
 	       #:cl-interpol)
   :components ((:module "src"
                 :components
