@@ -9,46 +9,49 @@ git clone https://github.com/qubit55/cl-airtable.git .
 
 ## Usage
 ```
-(ql:quickload '(cl-airtable arrow-macros shasht))
-(use-package :cl-airtable)
-(:import-from :arrow-macros #:->)
-(:import-from :shasht #:read-json)
+(ql:quickload '(:cl-airtable
+		:serapeum
+		:arrow-macros
+		:shasht))
 
-;; Define your airtable base
+(defpackage :airtable-test
+  (:use :cl :cl-airtable)
+  (:import-from :serapeum
+		#:dict
+		#:toggle-pretty-print-hash-table)
+  (:import-from :arrow-macros
+		#:->)
+  (:import-from :shasht
+		#:read-json))
+
+(in-package :airtable-test)
+
+(toggle-pretty-print-hash-table)
+
+;; Database
 (defparameter *airtable*
-  (-> (airtable :key "airtable-key")
-    (base "base-id-or-name"))
-    "This is the airtable base.")
+  (-> (airtable :key "secret-key")
+      (base "base-name-or-id")))
 
-;; Define the table
-(defparameter *some-table*
+;; Table 
+(defparameter *select-test*
   (-> *airtable*
-    (table "table-id-or-name"))
-  "This table holds some info.")
+    (table "table-name-or-id")))
 
-;; Query *some-table*
-(-> *some-table*
-   (select :fields #("field-1" "field-2" "field-3")
-           :max-records 10
-           :sort #(("field-1" "asc") ("field-2" "desc"))
-           :filter-by-formula (format nil "FIND(\"~A\" , {field-1})" "abc")
-           :page-size 18
-           :offset nil)
-   (read-json)
-   (extract-records))
-
-;; Or in one go
-(-> (airtable :key "airtable-key")
-   (base "base-id-or-name")
-   (table "table-id-or-name")
-   (select :fields #("field-1" "field-2" "field-3")
-           :max-records 10
-           :sort #(("field-1" "asc") ("field-2" "desc"))
-           :filter-by-formula (format nil "FIND(\"~A\" , {field-1})" "abc")
-           :page-size 18
-           :offset nil)
-   (read-json)
-   (extract-records))
+;; All parameters except the table are optional
+(-> *select-test*
+    (select :fields #("field-1" "field-2" "field-3" "field-4")
+      :max-records 20
+      :sort #(("field-4" "asc"))
+      :filter-by-formula (format nil "FIND(\"~A\" , {field-2})" "abc")
+      :page-size 18
+      :offset nil
+      :cell-format "string"
+      :time-zone "America/Indiana/Knox"
+      :user-locale "en-gb"
+      :return-fields-by-field-id t
+      :record-metadata #("commentCount"))
+    (read-json))
 
 ```
 
