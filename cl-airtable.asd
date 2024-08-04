@@ -1,5 +1,5 @@
 (defsystem "cl-airtable"
-  :version "0.0.1"
+  :version "0.5.0"
   :author "Anton Lobach"
   :mailto "antonlobach@uri.com"
   :license "MIT"
