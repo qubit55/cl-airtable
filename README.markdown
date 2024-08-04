@@ -72,8 +72,8 @@ cd ~/quicklisp/local-projects/ && git clone https://github.com/qubit55/cl-airtab
 ```
 
 ## API
-```
-(select
+```lisp
+(defun select
   (table &key fields
 	      sort
 	      filter-by-formula
@@ -87,7 +87,7 @@ cd ~/quicklisp/local-projects/ && git clone https://github.com/qubit55/cl-airtab
 	      return-fields-by-field-id
 	      record-metadata))
 
-(create
+(defun create
   (table &key records
 	      return-fields-by-field-id
 	      typecast)
