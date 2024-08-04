@@ -34,9 +34,25 @@ cd ~/quicklisp/local-projects/ && git clone https://github.com/qubit55/cl-airtab
       (base "base-name-or-id")))
 
 ;; Table 
-(defparameter *select-test*
+(defparameter *test-table*
   (-> *airtable*
     (table "table-name-or-id")))
+
+;; Insert some records
+(create
+ *test-table*
+ :records (vector (dict "field-1" "a"
+			"field-2" "abc"
+			"field-3" "test@gmail.com"
+			"field-4" 1)
+		  (dict "field-1" "a"
+			"field-2" "abc"
+			"field-3" "test@gmail.com"
+			"field-4" 1)
+		  (dict "field-1" "a"
+			"field-2" "abc"
+			"field-3" "test@gmail.com"
+			"field-4" 1)))
 
 ;; All parameters except the table are optional
 (-> *select-test*

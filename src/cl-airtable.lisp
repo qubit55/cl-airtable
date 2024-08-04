@@ -129,10 +129,8 @@
        (lambda (x) (list (cons "field" (car x)) (cons "direction" (car (cdr x)))))
        xs))
 
-(defun select
-    (table
-     &key
-       fields
+(defun build-select-content
+    (&key fields
        sort
        filter-by-formula
        max-records
@@ -144,30 +142,66 @@
        user-locale
        return-fields-by-field-id
        record-metadata)
+  (write-json*
+   (-> nil
+       (add-max-records max-records)
+       (add-sort sort)
+       (add-fields fields)
+       (add-formula filter-by-formula)
+       (add-page-size page-size)
+       (add-offset offset)
+       (add-view view)
+       (add-time-zone time-zone)
+       (add-user-locale user-locale)
+       (add-return-fields-by-field-id return-fields-by-field-id)
+       (add-record-metadata record-metadata))
+   :stream nil
+   :alist-as-object t))
+
+(defun select
+    (table &key
+	     fields
+	     sort
+	     filter-by-formula
+	     max-records
+	     page-size
+	     offset
+	     view
+	     cell-format
+	     time-zone
+	     user-locale
+	     return-fields-by-field-id
+	     record-metadata)
   (bind ((key (table-struct-key table))
          (base-id (table-struct-base-id table))
          (table-id-or-name (table-struct-table-id-or-name table))
          (url #?"https://api.airtable.com/v0/${base-id}/${table-id-or-name}/listRecords")
          (sort-fields (format-sort-fields sort))
          (content
-          (-> nil
-              (add-max-records max-records)
-              (add-sort sort-fields)
-              (add-fields fields)
-              (add-formula filter-by-formula)
-              (add-page-size page-size)
-              (add-offset offset)
-	      (add-view view)
-	      (add-time-zone time-zone)
-	      (add-user-locale user-locale)
-	      (add-return-fields-by-field-id return-fields-by-field-id)
-	      (add-record-metadata record-metadata))))
+	  (build-select-content
+	   :fields fields
+	   :sort sort-fields
+	   :filter-by-formula filter-by-formula
+	   :max-records max-records
+	   :page-size page-size
+	   :offset offset
+	   :view view
+	   :cell-format cell-format
+	   :time-zone time-zone
+	   :user-locale user-locale
+	   :return-fields-by-field-id return-fields-by-field-id
+	   :record-metadata record-metadata)))
     (dex:post url
 	      :bearer-auth key
 	      :headers '(("content-type" . "application/json"))
-	      :content (write-json* content
-				    :stream nil
-				    :alist-as-object t))))
+	      :content content)))
+
+(defun build-create-content
+    (&key records)
+  (write-json*
+	   (dict "records"
+		 (map 'vector (lambda (x) (dict "fields" x)) records))
+	   :stream nil))
 
 (defun create
     (table &key records)
@@ -176,11 +210,7 @@
          (base-id (table-struct-base-id table))
          (table-id-or-name (table-struct-table-id-or-name table))
          (url #?"https://api.airtable.com/v0/${base-id}/${table-id-or-name}")
-	 (content
-	  (write-json*
-	   (dict "records"
-		 (map 'vector (lambda (x) (dict "fields" x)) records))
-	   :stream nil)))
+	 (content (build-create-content :records records)))
     (dex:post url
 	      :bearer-auth key
 	      :headers '(("content-type" . "application/json"))
