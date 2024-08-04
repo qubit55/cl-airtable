@@ -38,7 +38,7 @@ cd ~/quicklisp/local-projects/ && git clone https://github.com/qubit55/cl-airtab
   (-> *airtable*
     (table "table-name-or-id")))
 
-;; Insert some records
+;; Create records https://airtable.com/developers/web/api/create-records
 (create
  *test-table*
  :records (vector (dict "field-1" "a"
@@ -54,7 +54,7 @@ cd ~/quicklisp/local-projects/ && git clone https://github.com/qubit55/cl-airtab
 			"field-3" "test@gmail.com"
 			"field-4" 1)))
 
-;; Select records
+;; List records https://airtable.com/developers/web/api/list-records
 (-> *test-table*
    (select :fields #("field-1" "field-2" "field-3" "field-4")
       	   :max-records 20
