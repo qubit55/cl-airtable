@@ -55,7 +55,7 @@ cd ~/quicklisp/local-projects/ && git clone https://github.com/qubit55/cl-airtab
 			"field-4" 1)))
 
 ;; All parameters except the table are optional
-(-> *select-test*
+(-> *test-table*
    (select :fields #("field-1" "field-2" "field-3" "field-4")
       	   :max-records 20
 	   :sort #(("field-4" "asc"))
