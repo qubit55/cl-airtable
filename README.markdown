@@ -72,7 +72,7 @@ cd ~/quicklisp/local-projects/ && git clone https://github.com/qubit55/cl-airtab
 ```
 
 ## API
-### List fields
+### List records
 https://airtable.com/developers/web/api/list-records
 ```lisp
 (defun select
