@@ -71,6 +71,28 @@ cd ~/quicklisp/local-projects/ && git clone https://github.com/qubit55/cl-airtab
     
 ```
 
+## API
+```
+(select
+  (table &key fields
+	      sort
+	      filter-by-formula
+	      max-records
+	      page-size
+	      offset
+	      view
+	      cell-format
+	      time-zone
+	      user-locale
+	      return-fields-by-field-id
+	      record-metadata))
+
+(create
+  (table &key records
+	      return-fields-by-field-id
+	      typecast)
+```
+
 ## Author
 
 * Anton Lobach (antonlobach@uri.com)

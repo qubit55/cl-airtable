@@ -217,13 +217,18 @@
    :stream nil))
 
 (defun create
-    (table &key records)
+    (table &key records
+	     return-fields-by-field-id
+	     typecast)
   "Function to insert a record into an airtable table"
   (bind ((key (table-struct-key table))
          (base-id (table-struct-base-id table))
          (table-id-or-name (table-struct-table-id-or-name table))
          (url #?"https://api.airtable.com/v0/${base-id}/${table-id-or-name}")
-	 (content (build-create-content :records records)))
+	 (content (build-create-content
+		   :records records
+		   :return-fields-by-field-id return-fields-by-field-id
+		   :typecast typecast)))
     (dex:post url
 	      :bearer-auth key
 	      :headers '(("content-type" . "application/json"))
