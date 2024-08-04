@@ -52,6 +52,23 @@ git clone https://github.com/qubit55/cl-airtable.git .
 	   :return-fields-by-field-id t
 	   :record-metadata #("commentCount"))
     (read-json))
+
+;; In one go
+(-> (airtable :key "secret-key")
+   (base "base-name-or-id")
+   (table "table-name-or-id")
+   (select :fields #("field-1" "field-2" "field-3" "field-4")
+      	   :max-records 20
+	   :sort #(("field-4" "asc"))
+	   :filter-by-formula (format nil "FIND(\"~A\" , {field-2})" "abc")
+	   :page-size 18
+	   :offset nil
+	   :cell-format "string"
+	   :time-zone "America/Indiana/Knox"
+	   :user-locale "en-gb"
+	   :return-fields-by-field-id t
+	   :record-metadata #("commentCount"))
+    (read-json))
 ```
 
 ## Author
