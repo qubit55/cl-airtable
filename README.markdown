@@ -39,20 +39,19 @@ cd ~/quicklisp/local-projects/ && git clone https://github.com/qubit55/cl-airtab
     (table "table-name-or-id")))
 
 ;; Create records 
-(create
- *test-table*
- :records (vector (dict "field-1" "a"
-			"field-2" "abc"
-			"field-3" "test@gmail.com"
-			"field-4" 1)
-		  (dict "field-1" "a"
-			"field-2" "abc"
-			"field-3" "test@gmail.com"
-			"field-4" 1)
-		  (dict "field-1" "a"
-			"field-2" "abc"
-			"field-3" "test@gmail.com"
-			"field-4" 1)))
+(-> *test-table*
+   (create :records (vector (dict "field-1" "a"
+			          "field-2" "abc"
+			          "field-3" "test@gmail.com"
+			          "field-4" 1)
+		            (dict "field-1" "a"
+			          "field-2" "abc"
+			          "field-3" "test@gmail.com"
+			          "field-4" 1)
+		            (dict "field-1" "a"
+			          "field-2" "abc"
+			          "field-3" "test@gmail.com"
+			          "field-4" 1))))
 
 ;; List records
 (-> *test-table*
