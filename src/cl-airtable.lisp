@@ -75,9 +75,9 @@
 (defun add-to-content
     (content parameter value)
   "Add parameter and its value to the content of the request"
-  (cond ((null n) content)
+  (cond ((null value) content)
         ((search parameter (format nil "~A" content)) content)
-        (t (append content `((,parameter . ,n))))))
+        (t (append content `((,parameter . ,value))))))
 
 (defun add-max-records (content n)
   (add-to-content content "maxRecords" n))
@@ -133,6 +133,14 @@
     (content user-locale)
   (add-to-content content "userLocale" user-locale))
 
+(defun add-return-fields-by-field-id
+    (content return-fields-by-field-id)
+  (add-to-content content "returnFieldsByFieldId" return-fields-by-field-id))
+
+(defun add-record-metadata
+    (content record-metadata)
+  (add-to-content content "recordMetadata" record-metadata))
+
 (defun format-sort-fields
     (xs)
   (map 'vector
@@ -151,7 +159,9 @@
        view
        cell-format
        time-zone
-       user-locale)
+       user-locale
+       return-fields-by-field-id
+       record-metadata)
   (bind ((key (table-struct-key table))
          (base-id (table-struct-base-id table))
          (table-id-or-name (table-struct-table-id-or-name table))
@@ -167,7 +177,9 @@
               (add-offset offset)
 	      (add-view view)
 	      (add-time-zone time-zone)
-	      (add-user-locale user-locale))))
+	      (add-user-locale user-locale)
+	      (add-return-fields-by-field-id return-fields-by-field-id)
+	      (add-record-metadata record-metadata))))
     (dex:post url
 	      :bearer-auth key
 	      :headers '(("content-type" . "application/json"))
