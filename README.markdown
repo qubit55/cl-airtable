@@ -51,8 +51,7 @@ git clone https://github.com/qubit55/cl-airtable.git .
 	   :user-locale "en-gb"
 	   :return-fields-by-field-id t
 	   :record-metadata #("commentCount"))
-	   (read-json))
-
+    (read-json))
 ```
 
 ## Author
