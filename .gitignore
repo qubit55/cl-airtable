@@ -1,3 +1,5 @@
 *lisp~
 *txt
 *~
+*.env.local
+cl-airtable-test.lisp

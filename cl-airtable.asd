@@ -10,7 +10,8 @@
                #:arrow-macros
 	       #:metabang-bind
 	       #:alexandria
-	       #:cl-interpol)
+	       #:cl-interpol
+	       #:quri)
   :components ((:module "src"
                 :components
                 ((:file "cl-airtable"))))
