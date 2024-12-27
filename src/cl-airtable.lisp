@@ -20,6 +20,7 @@
    #:extract-offset
    #:extract-fields
    #:select
+   #:async-select
    #:create))
 
 (in-package :cl-airtable)
