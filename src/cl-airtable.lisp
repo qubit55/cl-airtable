@@ -41,10 +41,10 @@
 (defun fetch-airtable-fields
     (url &key bearer-auth (verbose t))
   (-> url
-    (dex:get :bearer-auth bearer-auth :verbose verbose)
-    read-json
-    extract-records
-    extract-fields))
+      (dex:get :bearer-auth bearer-auth :verbose verbose)
+      read-json
+      extract-records
+      extract-fields))
 
 (defun get-field
     (fields name)
@@ -175,24 +175,24 @@
 	     return-fields-by-field-id
 	     record-metadata)
   (bind ((key (table-struct-key table))
-         (base-id (table-struct-base-id table))
-         (table-id-or-name (table-struct-table-id-or-name table))
-         (url #?"https://api.airtable.com/v0/${base-id}/${table-id-or-name}/listRecords")
-         (sort-fields (format-sort-fields sort))
-         (content
-	  (build-select-content
-	   :fields fields
-	   :sort sort-fields
-	   :filter-by-formula filter-by-formula
-	   :max-records max-records
-	   :page-size page-size
-	   :offset offset
-	   :view view
-	   :cell-format cell-format
-	   :time-zone time-zone
-	   :user-locale user-locale
-	   :return-fields-by-field-id return-fields-by-field-id
-	   :record-metadata record-metadata)))
+	  (base-id (table-struct-base-id table))
+	  (table-id-or-name (table-struct-table-id-or-name table))
+	  (url #?"https://api.airtable.com/v0/${base-id}/${table-id-or-name}/listRecords")
+	  (sort-fields (format-sort-fields sort))
+	  (content
+	   (build-select-content
+	    :fields fields
+	    :sort sort-fields
+	    :filter-by-formula filter-by-formula
+	    :max-records max-records
+	    :page-size page-size
+	    :offset offset
+	    :view view
+	    :cell-format cell-format
+	    :time-zone time-zone
+	    :user-locale user-locale
+	    :return-fields-by-field-id return-fields-by-field-id
+	    :record-metadata record-metadata)))
     (dex:post url
 	      :bearer-auth key
 	      :headers '(("content-type" . "application/json"))
@@ -213,24 +213,24 @@
 	     return-fields-by-field-id
 	     record-metadata)
   (bind ((key (table-struct-key table))
-         (base-id (table-struct-base-id table))
-         (table-id-or-name (table-struct-table-id-or-name table))
-         (url #?"https://api.airtable.com/v0/${base-id}/${table-id-or-name}/listRecords")
-         (sort-fields (format-sort-fields sort))
-         (content
-	  (build-select-content
-	   :fields fields
-	   :sort sort-fields
-	   :filter-by-formula filter-by-formula
-	   :max-records max-records
-	   :page-size page-size
-	   :offset offset
-	   :view view
-	   :cell-format cell-format
-	   :time-zone time-zone
-	   :user-locale user-locale
-	   :return-fields-by-field-id return-fields-by-field-id
-	   :record-metadata record-metadata)))
+	  (base-id (table-struct-base-id table))
+	  (table-id-or-name (table-struct-table-id-or-name table))
+	  (url #?"https://api.airtable.com/v0/${base-id}/${table-id-or-name}/listRecords")
+	  (sort-fields (format-sort-fields sort))
+	  (content
+	   (build-select-content
+	    :fields fields
+	    :sort sort-fields
+	    :filter-by-formula filter-by-formula
+	    :max-records max-records
+	    :page-size page-size
+	    :offset offset
+	    :view view
+	    :cell-format cell-format
+	    :time-zone time-zone
+	    :user-locale user-locale
+	    :return-fields-by-field-id return-fields-by-field-id
+	    :record-metadata record-metadata)))
     (blackbird:catcher
      (blackbird:multiple-promise-bind
 	 (body)
@@ -271,13 +271,13 @@
 	     typecast)
   "Function to insert a record into an airtable table"
   (bind ((key (table-struct-key table))
-         (base-id (table-struct-base-id table))
-         (table-id-or-name (table-struct-table-id-or-name table))
-         (url #?"https://api.airtable.com/v0/${base-id}/${table-id-or-name}")
-	 (content (build-create-content
-		   :records records
-		   :return-fields-by-field-id return-fields-by-field-id
-		   :typecast typecast)))
+	  (base-id (table-struct-base-id table))
+	  (table-id-or-name (table-struct-table-id-or-name table))
+	  (url #?"https://api.airtable.com/v0/${base-id}/${table-id-or-name}")
+	  (content (build-create-content
+		    :records records
+		    :return-fields-by-field-id return-fields-by-field-id
+		    :typecast typecast)))
     (dex:post url
 	      :bearer-auth key
 	      :headers '(("content-type" . "application/json"))
