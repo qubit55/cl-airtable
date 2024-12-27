@@ -194,10 +194,17 @@
 	    :user-locale user-locale
 	    :return-fields-by-field-id return-fields-by-field-id
 	    :record-metadata record-metadata)))
-    (-> (dex:post url
-		  :bearer-auth key
-		  :headers '(("content-type" . "application/json"))
-		  :content content)
+    (-> url
+	(drakma:http-request :method :post
+			     :keep-alive nil
+			     :close t
+			     :content content
+			     :content-type "application/json"
+			     :additional-headers `(("Authorization" . ,#?"Bearer ${key}")))
+	(lambda (body)
+	  (if (stringp body)
+	      body
+	      (babel:octets-to-string body)))
 	(read-json))))
 
 (defun async-select
