@@ -198,6 +198,55 @@
 	      :headers '(("content-type" . "application/json"))
 	      :content content)))
 
+(defun async-select
+    (table &key
+	     fields
+	     sort
+	     filter-by-formula
+	     max-records
+	     page-size
+	     offset
+	     view
+	     cell-format
+	     time-zone
+	     user-locale
+	     return-fields-by-field-id
+	     record-metadata)
+  (bind ((key (table-struct-key table))
+         (base-id (table-struct-base-id table))
+         (table-id-or-name (table-struct-table-id-or-name table))
+         (url #?"https://api.airtable.com/v0/${base-id}/${table-id-or-name}/listRecords")
+         (sort-fields (format-sort-fields sort))
+         (content
+	  (build-select-content
+	   :fields fields
+	   :sort sort-fields
+	   :filter-by-formula filter-by-formula
+	   :max-records max-records
+	   :page-size page-size
+	   :offset offset
+	   :view view
+	   :cell-format cell-format
+	   :time-zone time-zone
+	   :user-locale user-locale
+	   :return-fields-by-field-id return-fields-by-field-id
+	   :record-metadata record-metadata)))
+    (blackbird:catcher
+     (blackbird:multiple-promise-bind
+	 (body)
+	 (das:http-request url
+			   :method :post
+			   :keep-alive nil
+			   :close t
+			   :content content
+			   :content-type "application/json"
+			   :additional-headers `(("Authorization" . ,#?"Bearer ${key}")))
+       (if (stringp body)
+	   (read-json body)
+	   (read-json (babel:octets-to-string body))))
+     (error (e)
+	    (format t "Error: ~a~%" e)))))
+
 (defun add-to-create-content
     (content parameter value)
   (bind ((content-copy (copy-hash-table content)))

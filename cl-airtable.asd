@@ -4,6 +4,8 @@
   :mailto "antonlobach@uri.com"
   :license "MIT"
   :depends-on (#:dexador
+	       #:drakma-async
+	       #:drakma
 	       #:shasht
 	       #:access
 	       #:serapeum
@@ -11,7 +13,9 @@
 	       #:metabang-bind
 	       #:alexandria
 	       #:cl-interpol
-	       #:quri)
+	       #:quri
+	       #:serapeum
+	       #:cl-dotenv)
   :components ((:module "src"
                 :components
                 ((:file "cl-airtable"))))
