@@ -194,10 +194,11 @@
 	    :user-locale user-locale
 	    :return-fields-by-field-id return-fields-by-field-id
 	    :record-metadata record-metadata)))
-    (dex:post url
-	      :bearer-auth key
-	      :headers '(("content-type" . "application/json"))
-	      :content content)))
+    (-> (dex:post url
+		  :bearer-auth key
+		  :headers '(("content-type" . "application/json"))
+		  :content content)
+	(read-json))))
 
 (defun async-select
     (table &key
