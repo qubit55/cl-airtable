@@ -161,6 +161,20 @@
    :stream nil
    :alist-as-object t))
 
+(defun send-content
+    (url content key)
+  (-> url
+      (drakma:http-request :method :post
+			   :keep-alive nil
+			   :close t
+			   :content content
+			   :content-type "application/json"
+			   :additional-headers `(("Authorization" . ,#?"Bearer ${key}")))
+      (lambda (body)
+	(if (stringp body)
+	    body
+	    (babel:octets-to-string body)))))
+
 (defun select
     (table &key
 	     fields
@@ -195,16 +209,7 @@
 	    :return-fields-by-field-id return-fields-by-field-id
 	    :record-metadata record-metadata)))
     (-> url
-	(drakma:http-request :method :post
-			     :keep-alive nil
-			     :close t
-			     :content content
-			     :content-type "application/json"
-			     :additional-headers `(("Authorization" . ,#?"Bearer ${key}")))
-	(lambda (body)
-	  (if (stringp body)
-	      body
-	      (babel:octets-to-string body)))
+	(send-content content key)
 	(read-json))))
 
 (defun async-select
