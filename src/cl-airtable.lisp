@@ -175,6 +175,23 @@
 	    body
 	    (babel:octets-to-string body)))))
 
+(defun async-send-content (url content key)
+  (blackbird:catcher
+   (blackbird:multiple-promise-bind
+       (body)
+       (das:http-request url
+			 :method :post
+			 :keep-alive nil
+			 :close t
+			 :content content
+			 :content-type "application/json"
+			 :additional-headers `(("Authorization" . ,#?"Bearer ${key}")))
+     (if (stringp body)
+	 body
+	 (babel:octets-to-string body)))
+   (error (e)
+	  (format t "Error in async-send-content: ~a~%" e))))
+
 (defun select
     (table &key
 	     fields
@@ -188,7 +205,8 @@
 	     time-zone
 	     user-locale
 	     return-fields-by-field-id
-	     record-metadata)
+	     record-metadata
+	     (async nil))
   (bind ((key (table-struct-key table))
 	  (base-id (table-struct-base-id table))
 	  (table-id-or-name (table-struct-table-id-or-name table))
@@ -208,9 +226,16 @@
 	    :user-locale user-locale
 	    :return-fields-by-field-id return-fields-by-field-id
 	    :record-metadata record-metadata)))
-    (-> url
-	(send-content content key)
-	(read-json))))
+    (if async
+	;; Send the request async
+	(blackbird:catcher
+	 (blackbird:alet ((result-string (async-send-content url content key)))
+	   (read-json result-string))
+	 (error (e) (format t "Error in select: ~a~%" e)))
+	;; Send the request sync
+	(-> url
+	    (send-content content key)
+	    (read-json)))))
 
 (defun async-select
     (table &key
