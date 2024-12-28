@@ -20,6 +20,7 @@
    #:extract-offset
    #:extract-fields
    #:select
+   #:async-select
    #:create))
 
 (in-package :cl-airtable)
@@ -160,6 +161,37 @@
    :stream nil
    :alist-as-object t))
 
+(defun send-content
+    (url content key)
+  (-> url
+      (drakma:http-request :method :post
+			   :keep-alive nil
+			   :close t
+			   :content content
+			   :content-type "application/json"
+			   :additional-headers `(("Authorization" . ,#?"Bearer ${key}")))
+      (lambda (body)
+	(if (stringp body)
+	    body
+	    (babel:octets-to-string body)))))
+
+(defun async-send-content (url content key)
+  (blackbird:catcher
+   (blackbird:multiple-promise-bind
+       (body)
+       (das:http-request url
+			 :method :post
+			 :keep-alive nil
+			 :close t
+			 :content content
+			 :content-type "application/json"
+			 :additional-headers `(("Authorization" . ,#?"Bearer ${key}")))
+     (if (stringp body)
+	 body
+	 (babel:octets-to-string body)))
+   (error (e)
+	  (format t "Error in async-send-content: ~a~%" e))))
+
 (defun select
     (table &key
 	     fields
@@ -173,7 +205,8 @@
 	     time-zone
 	     user-locale
 	     return-fields-by-field-id
-	     record-metadata)
+	     record-metadata
+	     (async nil))
   (bind ((key (table-struct-key table))
 	  (base-id (table-struct-base-id table))
 	  (table-id-or-name (table-struct-table-id-or-name table))
@@ -193,59 +226,16 @@
 	    :user-locale user-locale
 	    :return-fields-by-field-id return-fields-by-field-id
 	    :record-metadata record-metadata)))
-    (dex:post url
-	      :bearer-auth key
-	      :headers '(("content-type" . "application/json"))
-	      :content content)))
-
-(defun async-select
-    (table &key
-	     fields
-	     sort
-	     filter-by-formula
-	     max-records
-	     page-size
-	     offset
-	     view
-	     cell-format
-	     time-zone
-	     user-locale
-	     return-fields-by-field-id
-	     record-metadata)
-  (bind ((key (table-struct-key table))
-	  (base-id (table-struct-base-id table))
-	  (table-id-or-name (table-struct-table-id-or-name table))
-	  (url #?"https://api.airtable.com/v0/${base-id}/${table-id-or-name}/listRecords")
-	  (sort-fields (format-sort-fields sort))
-	  (content
-	   (build-select-content
-	    :fields fields
-	    :sort sort-fields
-	    :filter-by-formula filter-by-formula
-	    :max-records max-records
-	    :page-size page-size
-	    :offset offset
-	    :view view
-	    :cell-format cell-format
-	    :time-zone time-zone
-	    :user-locale user-locale
-	    :return-fields-by-field-id return-fields-by-field-id
-	    :record-metadata record-metadata)))
-    (blackbird:catcher
-     (blackbird:multiple-promise-bind
-	 (body)
-	 (das:http-request url
-			   :method :post
-			   :keep-alive nil
-			   :close t
-			   :content content
-			   :content-type "application/json"
-			   :additional-headers `(("Authorization" . ,#?"Bearer ${key}")))
-       (if (stringp body)
-	   (read-json body)
-	   (read-json (babel:octets-to-string body))))
-     (error (e)
-	    (format t "Error: ~a~%" e)))))
+    (if async
+	;; Send the request async, use a non-blocking http post request
+	(blackbird:catcher
+	 (blackbird:alet ((result-string (async-send-content url content key)))
+	   (read-json result-string))
+	 (error (e) (format t "Error in select: ~a~%" e)))
+	;; Send the request sync
+	(-> url
+	    (send-content content key)
+	    (read-json)))))
 
 (defun add-to-create-content
     (content parameter value)
@@ -278,7 +268,4 @@
 		    :records records
 		    :return-fields-by-field-id return-fields-by-field-id
 		    :typecast typecast)))
-    (dex:post url
-	      :bearer-auth key
-	      :headers '(("content-type" . "application/json"))
-	      :content content)))
+    (send-content url content key)))
