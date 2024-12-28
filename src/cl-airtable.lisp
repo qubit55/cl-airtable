@@ -227,7 +227,7 @@
 	    :return-fields-by-field-id return-fields-by-field-id
 	    :record-metadata record-metadata)))
     (if async
-	;; Send the request async
+	;; Send the request async, use a non-blocking http post request
 	(blackbird:catcher
 	 (blackbird:alet ((result-string (async-send-content url content key)))
 	   (read-json result-string))
