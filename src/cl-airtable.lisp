@@ -268,7 +268,4 @@
 		    :records records
 		    :return-fields-by-field-id return-fields-by-field-id
 		    :typecast typecast)))
-    (dex:post url
-	      :bearer-auth key
-	      :headers '(("content-type" . "application/json"))
-	      :content content)))
+    (send-content url content key)))
