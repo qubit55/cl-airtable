@@ -36,23 +36,24 @@ Best for simple operations where blocking behavior is acceptable.
 
 ```lisp
 (ql:quickload '(:cl-airtable :serapeum :arrow-macros))
+(use-package :cl-airtable)
 ```
 
 **Setup Database and Table:**
 
 ```lisp
 (defparameter *airtable*
-  (-> (airtable :key "secret-key")
+  (arrow-macros:-> (airtable :key "secret-key")
       (base "base-name-or-id")))
 
 (defparameter *test-table*
-  (-> *airtable* (table "table-name-or-id")))
+  (arrow-macros:-> *airtable* (table "table-name-or-id")))
 ```
 
 **Create Records:**
 
 ```lisp
-(-> *test-table*
+(arrow-macros:-> *test-table*
     (create :records (vector (dict "field-1" "a"
                                    "field-2" "abc"
                                    "field-3" "test@gmail.com"
@@ -62,7 +63,7 @@ Best for simple operations where blocking behavior is acceptable.
 **Select Records:**
 
 ```lisp
-(-> *test-table*
+(arrow-macros:-> *test-table*
     (select :fields #("field-1" "field-2" "field-3" "field-4")
             :max-records 20
             :sort #(("field-4" "asc"))
@@ -87,6 +88,7 @@ Perfect for web applications or event-driven systems. Set `:async t` to enable n
 
 ```lisp
 (ql:quickload '(:cl-airtable :blackbird :cl-async))
+(use-package :cl-airtable)
 ```
 
 ```lisp
@@ -123,6 +125,7 @@ Perfect for web applications or event-driven systems. Set `:async t` to enable n
 
 ```lisp
 (ql:quickload '(:cl-airtable :blackbird :cl-async :clack :ningle :shasht))
+(use-package :cl-airtable)
 ```
 
 **Web Routes Setup:**
