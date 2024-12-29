@@ -33,7 +33,7 @@ Make sure dependencies are loaded before usage.
 ### Setup a package for this tutorial.
 
 ```lisp
-(ql:quickload '(:cl-airtable :cl-dotenv :clack :ningle :shasht :serapeum :cl-dotenv))
+(ql:quickload '(:cl-airtable :clack :ningle :shasht :serapeum :cl-dotenv))
 
 (defpackage cl-airtable-tutorial
   (:use :cl)
@@ -58,11 +58,12 @@ Make sure dependencies are loaded before usage.
 
 ```lisp
 (defparameter *airtable*
-  (arrow-macros:-> (airtable :key "secret-key")
+  (-> (airtable :key "secret-key")
       (base "base-name-or-id")))
 
 (defparameter *test-table*
-  (arrow-macros:-> *airtable* (table "table-name-or-id")))
+  (-> *airtable*
+      (table "table-name-or-id")))
 ```
 
 ### 🔒 **Synchronous (Blocking) Requests**
