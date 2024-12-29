@@ -1,10 +1,10 @@
 (defsystem "cl-airtable"
-  :version "0.5.5"
+  :version "0.6.0"
   :author "Anton Lobach"
   :mailto "antonlobach@uri.com"
   :license "MIT"
-  :depends-on (#:dexador
-	       #:drakma-async
+  :depends-on (#:drakma-async
+	       #:babel
 	       #:drakma
 	       #:shasht
 	       #:access
@@ -15,11 +15,12 @@
 	       #:cl-interpol
 	       #:quri
 	       #:serapeum
-	       #:cl-dotenv)
+	       #:blackbird
+	       #:cl-async)
   :components ((:module "src"
                 :components
                 ((:file "cl-airtable"))))
-  :description ""
+  :description "Airtable SDK for Common Lisp"
   :in-order-to ((test-op (test-op "cl-airtable/tests"))))
 
 (defsystem "cl-airtable/tests"

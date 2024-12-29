@@ -12,6 +12,7 @@
 		#:dict)
   (:import-from :alexandria
 		#:copy-hash-table)
+  (:local-nicknames (:bb :blackbird))
   (:export
    #:airtable
    #:base
@@ -20,7 +21,6 @@
    #:extract-offset
    #:extract-fields
    #:select
-   #:async-select
    #:create))
 
 (in-package :cl-airtable)
@@ -39,13 +39,13 @@
   (->> records
     (map 'vector (lambda (rec) (access rec "fields")))))
 
-(defun fetch-airtable-fields
-    (url &key bearer-auth (verbose t))
-  (-> url
-      (dex:get :bearer-auth bearer-auth :verbose verbose)
-      read-json
-      extract-records
-      extract-fields))
+;; (defun fetch-airtable-fields
+;;     (url &key bearer-auth (verbose t))
+;;   (-> url
+;;       (dex:get :bearer-auth bearer-auth :verbose verbose)
+;;       read-json
+;;       extract-records
+;;       extract-fields))
 
 (defun get-field
     (fields name)
@@ -176,8 +176,8 @@
 	    (babel:octets-to-string body)))))
 
 (defun async-send-content (url content key)
-  (blackbird:catcher
-   (blackbird:multiple-promise-bind
+  (bb:catcher
+   (bb:multiple-promise-bind
        (body)
        (das:http-request url
 			 :method :post
@@ -207,6 +207,7 @@
 	     return-fields-by-field-id
 	     record-metadata
 	     (async nil))
+  "Function to extract records from a table"
   (bind ((key (table-struct-key table))
 	  (base-id (table-struct-base-id table))
 	  (table-id-or-name (table-struct-table-id-or-name table))
@@ -228,8 +229,8 @@
 	    :record-metadata record-metadata)))
     (if async
 	;; Send the request async, use a non-blocking http post request
-	(blackbird:catcher
-	 (blackbird:alet ((result-string (async-send-content url content key)))
+	(bb:catcher
+	 (bb:alet ((result-string (async-send-content url content key)))
 	   (read-json result-string))
 	 (error (e) (format t "Error in select: ~a~%" e)))
 	;; Send the request sync
@@ -258,8 +259,9 @@
 (defun create
     (table &key records
 	     return-fields-by-field-id
-	     typecast)
-  "Function to insert a record into an airtable table"
+	     typecast
+	     (async nil))
+  "Function to insert a record into a table"
   (bind ((key (table-struct-key table))
 	  (base-id (table-struct-base-id table))
 	  (table-id-or-name (table-struct-table-id-or-name table))
@@ -268,4 +270,13 @@
 		    :records records
 		    :return-fields-by-field-id return-fields-by-field-id
 		    :typecast typecast)))
-    (send-content url content key)))
+    (if async
+	;; Send the request async, use a non-blocking http post request
+	(bb:catcher
+	 (bb:alet ((result-string (async-send-content url content key)))
+	   (read-json result-string))
+	 (error (e) (format t "Error in select: ~a~%" e)))
+	;; Send the request sync
+	(-> url
+	    (send-content content key)
+	    (read-json)))))
