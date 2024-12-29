@@ -3,8 +3,7 @@
   :author "Anton Lobach"
   :mailto "antonlobach@uri.com"
   :license "MIT"
-  :depends-on (#:dexador
-	       #:drakma-async
+  :depends-on (#:drakma-async
 	       #:drakma
 	       #:shasht
 	       #:access
@@ -15,11 +14,13 @@
 	       #:cl-interpol
 	       #:quri
 	       #:serapeum
-	       #:cl-dotenv)
+	       #:cl-dotenv
+	       #:blackbird
+	       #:cl-async)
   :components ((:module "src"
                 :components
                 ((:file "cl-airtable"))))
-  :description ""
+  :description "Airtable SDK for Common Lisp"
   :in-order-to ((test-op (test-op "cl-airtable/tests"))))
 
 (defsystem "cl-airtable/tests"

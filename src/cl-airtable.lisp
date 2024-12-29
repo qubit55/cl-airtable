@@ -12,6 +12,7 @@
 		#:dict)
   (:import-from :alexandria
 		#:copy-hash-table)
+  (:local-nicknames (:bb :blackbird))
   (:export
    #:airtable
    #:base
