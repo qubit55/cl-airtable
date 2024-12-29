@@ -14,7 +14,6 @@
 	       #:cl-interpol
 	       #:quri
 	       #:serapeum
-	       #:cl-dotenv
 	       #:blackbird
 	       #:cl-async)
   :components ((:module "src"

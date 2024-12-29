@@ -176,8 +176,8 @@
 	    (babel:octets-to-string body)))))
 
 (defun async-send-content (url content key)
-  (blackbird:catcher
-   (blackbird:multiple-promise-bind
+  (bb:catcher
+   (bb:multiple-promise-bind
        (body)
        (das:http-request url
 			 :method :post
@@ -229,8 +229,8 @@
 	    :record-metadata record-metadata)))
     (if async
 	;; Send the request async, use a non-blocking http post request
-	(blackbird:catcher
-	 (blackbird:alet ((result-string (async-send-content url content key)))
+	(bb:catcher
+	 (bb:alet ((result-string (async-send-content url content key)))
 	   (read-json result-string))
 	 (error (e) (format t "Error in select: ~a~%" e)))
 	;; Send the request sync
@@ -272,8 +272,8 @@
 		    :typecast typecast)))
     (if async
 	;; Send the request async, use a non-blocking http post request
-	(blackbird:catcher
-	 (blackbird:alet ((result-string (async-send-content url content key)))
+	(bb:catcher
+	 (bb:alet ((result-string (async-send-content url content key)))
 	   (read-json result-string))
 	 (error (e) (format t "Error in select: ~a~%" e)))
 	;; Send the request sync
