@@ -30,7 +30,7 @@ Make sure dependencies are loaded before usage.
 
 ## 💻 **Usage**
 
-### Setup a package for this tutorial.
+### Set up a package for this tutorial.
 
 ```lisp
 (ql:quickload '(:cl-airtable :clack :ningle :shasht :serapeum :cl-dotenv))
