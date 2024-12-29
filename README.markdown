@@ -164,6 +164,36 @@ Perfect for web applications or event-driven systems. Set `:async t` to enable n
            (error (e) (format t "Error calling airtable-async-select: ~a~%" e))))))
 ```
 
+** Async create route **
+```lisp
+(setf (ningle:route *app* "/airtable-async-create" :method :GET)
+      #'(lambda (params)
+	  (declare (ignore params))
+	  (lambda (responder)
+	    (bb:catcher
+	     (bb:alet* ((response
+			 (create
+			  *test-table*
+			  :async t
+			  :records (vector (dict "field-1" "a"
+						 "field-2" "abc"
+						 "field-3" "test@gmail.com"
+						 "field-4" 2)
+					   (dict "field-1" "a"
+						 "field-2" "abc"
+						 "field-3" "test@gmail.com"
+						 "field-4" 2)
+					   (dict "field-1" "a"
+						 "field-2" "abc"
+						 "field-3" "test@gmail.com"
+						 "field-4" 2))))
+			(response-str (write-json response nil)))
+	       (print "Called /airtable-async-create")
+	       (funcall responder `(200 (:content-type "application/json")
+					(,response-str))))
+	     (error (e) (format t "Error 2: ~a~%" e))))))
+```
+
 **Start Server:**
 
 ```lisp
