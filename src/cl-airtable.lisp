@@ -207,6 +207,7 @@
 	     return-fields-by-field-id
 	     record-metadata
 	     (async nil))
+  "Function to extract records from a table"
   (bind ((key (table-struct-key table))
 	  (base-id (table-struct-base-id table))
 	  (table-id-or-name (table-struct-table-id-or-name table))
@@ -258,8 +259,9 @@
 (defun create
     (table &key records
 	     return-fields-by-field-id
-	     typecast)
-  "Function to insert a record into an airtable table"
+	     typecast
+	     (async nil))
+  "Function to insert a record into a table"
   (bind ((key (table-struct-key table))
 	  (base-id (table-struct-base-id table))
 	  (table-id-or-name (table-struct-table-id-or-name table))
@@ -268,4 +270,13 @@
 		    :records records
 		    :return-fields-by-field-id return-fields-by-field-id
 		    :typecast typecast)))
-    (send-content url content key)))
+    (if async
+	;; Send the request async, use a non-blocking http post request
+	(blackbird:catcher
+	 (blackbird:alet ((result-string (async-send-content url content key)))
+	   (read-json result-string))
+	 (error (e) (format t "Error in select: ~a~%" e)))
+	;; Send the request sync
+	(-> url
+	    (send-content content key)
+	    (read-json)))))
