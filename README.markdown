@@ -30,12 +30,10 @@ Make sure dependencies are loaded before usage.
 
 ## 💻 **Usage**
 
-### 🔒 **Synchronous (Blocking) Requests**
-
-Best for simple operations where blocking behavior is acceptable.
+### Setup a package for this tutorial.
 
 ```lisp
-(ql:quickload '(:cl-airtable :cl-dotenv :clack :ningle :shasht :serapeum :cl-dotenv))
+(ql:quickload '(:cl-airtable :clack :ningle :shasht :serapeum :cl-dotenv))
 
 (defpackage cl-airtable-tutorial
   (:use :cl)
@@ -60,17 +58,22 @@ Best for simple operations where blocking behavior is acceptable.
 
 ```lisp
 (defparameter *airtable*
-  (arrow-macros:-> (airtable :key "secret-key")
+  (-> (airtable :key "secret-key")
       (base "base-name-or-id")))
 
 (defparameter *test-table*
-  (arrow-macros:-> *airtable* (table "table-name-or-id")))
+  (-> *airtable*
+      (table "table-name-or-id")))
 ```
+
+### 🔒 **Synchronous (Blocking) Requests**
+
+Best for simple operations where blocking behavior is acceptable.
 
 **Create Records:**
 
 ```lisp
-(arrow-macros:-> *test-table*
+(-> *test-table*
     (create :records (vector (dict "field-1" "a"
                                    "field-2" "abc"
                                    "field-3" "test@gmail.com"
@@ -80,7 +83,7 @@ Best for simple operations where blocking behavior is acceptable.
 **Select Records:**
 
 ```lisp
-(arrow-macros:-> *test-table*
+(-> *test-table*
     (select :fields #("field-1" "field-2" "field-3" "field-4")
             :max-records 20
             :sort #(("field-4" "asc"))
