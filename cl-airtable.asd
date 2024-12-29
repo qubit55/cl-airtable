@@ -4,6 +4,7 @@
   :mailto "antonlobach@uri.com"
   :license "MIT"
   :depends-on (#:drakma-async
+	       #:babel
 	       #:drakma
 	       #:shasht
 	       #:access

@@ -39,13 +39,13 @@
   (->> records
     (map 'vector (lambda (rec) (access rec "fields")))))
 
-(defun fetch-airtable-fields
-    (url &key bearer-auth (verbose t))
-  (-> url
-      (dex:get :bearer-auth bearer-auth :verbose verbose)
-      read-json
-      extract-records
-      extract-fields))
+;; (defun fetch-airtable-fields
+;;     (url &key bearer-auth (verbose t))
+;;   (-> url
+;;       (dex:get :bearer-auth bearer-auth :verbose verbose)
+;;       read-json
+;;       extract-records
+;;       extract-fields))
 
 (defun get-field
     (fields name)
