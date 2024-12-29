@@ -18,7 +18,7 @@ Supports both:
 
 ## 📥 **Installation**
 
-Install `cl-airtable` via **Quicklisp**:
+Install `cl-airtable`:
 
 ```sh
 cd ~/quicklisp/local-projects/ && git clone https://github.com/qubit55/cl-airtable.git
@@ -35,8 +35,25 @@ Make sure dependencies are loaded before usage.
 Best for simple operations where blocking behavior is acceptable.
 
 ```lisp
-(ql:quickload '(:cl-airtable :serapeum :arrow-macros))
-(use-package :cl-airtable)
+(ql:quickload '(:cl-airtable :cl-dotenv :clack :ningle :shasht :serapeum :cl-dotenv))
+
+(defpackage cl-airtable-tutorial
+  (:use :cl)
+  (:import-from :cl-airtable
+	        #:airtable
+		#:base
+		#:table
+		#:select
+		#:create)
+  (:import-from :arrow-macros #:->)
+  (:import-from :shasht #:write-json)
+  (:import-from :serapeum
+		#:dict
+		#:toggle-pretty-print-hash-table)
+  (:local-nicknames (:bb :blackbird)))
+
+(in-package :cl-airtable-tutorial)
+(toggle-pretty-print-hash-table)
 ```
 
 **Setup Database and Table:**
@@ -86,11 +103,6 @@ Perfect for web applications or event-driven systems. Set `:async t` to enable n
 #### **Creating Records (Async)**
 
 ```lisp
-(ql:quickload '(:cl-airtable :blackbird :cl-async))
-(use-package :cl-airtable)
-```
-
-```lisp
 (defun test-async-create ()
   (create *test-table*
           :async t
@@ -105,8 +117,8 @@ Perfect for web applications or event-driven systems. Set `:async t` to enable n
 
 ```lisp
 (defun test-async-select ()
-  (blackbird:catcher
-   (blackbird:alet* ((response
+  (bb:catcher
+   (bb:alet* ((response
                       (select *test-table*
                               :fields #("field-1" "field-2" "field-3" "field-4")
                               :async t))
@@ -122,10 +134,6 @@ Perfect for web applications or event-driven systems. Set `:async t` to enable n
 
 **cl-airtable** seamlessly integrates with web frameworks like **Clack**, **Ningle**, and uses **Wookie** as the backend.
 
-```lisp
-(ql:quickload '(:cl-airtable :blackbird :cl-async :clack :ningle :shasht))
-(use-package :cl-airtable)
-```
 
 **Web Routes Setup:**
 
