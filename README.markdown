@@ -74,8 +74,7 @@ Best for simple operations where blocking behavior is acceptable.
             :time-zone "America/Indiana/Knox"
             :user-locale "en-gb"
             :return-fields-by-field-id t
-            :record-metadata #( "commentCount"))
-    (read-json))
+            :record-metadata #( "commentCount")))
 ```
 
 ---
