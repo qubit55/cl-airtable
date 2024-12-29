@@ -122,7 +122,7 @@ Perfect for web applications or event-driven systems. Set `:async t` to enable n
 **cl-airtable** seamlessly integrates with web frameworks like **Clack**, **Ningle**, and uses **Wookie** as the backend.
 
 ```lisp
-(ql:quickload '(:cl-airtable :blackbird :cl-async :clack :ningle))
+(ql:quickload '(:cl-airtable :blackbird :cl-async :clack :ningle :shasht))
 ```
 
 **Web Routes Setup:**
@@ -146,7 +146,7 @@ Perfect for web applications or event-driven systems. Set `:async t` to enable n
                                   (select :fields #("field-1" "field-2" "field-3" "field-4")
                                           :max-records 20
                                           :async t)))
-                             (records-string (write-json records nil)))
+                             (records-string (shasht:write-json records nil)))
              (funcall responder `(200 (:content-type "application/json") (,records-string))))
            (error (e) (format t "Error calling airtable-async-select: ~a~%" e))))))
 ```
