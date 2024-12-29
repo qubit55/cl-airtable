@@ -161,7 +161,7 @@ Perfect for web applications or event-driven systems. Set `:async t` to enable n
                                     :async t)))
                       (records-string (shasht:write-json records nil)))
              (funcall responder `(200 (:content-type "application/json") (,records-string))))
-           (error (e) (format t "Error calling airtable-async-select: ~a~%" e))))))
+           (error (e) (format t "Error calling airtable-async-select endpoint: ~a~%" e))))))
 ```
 
 **Async Create Route:**
@@ -191,7 +191,7 @@ Perfect for web applications or event-driven systems. Set `:async t` to enable n
 	       (print "Called /airtable-async-create")
 	       (funcall responder `(200 (:content-type "application/json")
 					(,response-str))))
-	     (error (e) (format t "Error 2: ~a~%" e))))))
+	     (error (e) (format t "Error calling /airtable-async-create endpoint: ~a~%" e))))))
 ```
 
 **Start Server:**
