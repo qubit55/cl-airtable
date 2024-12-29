@@ -122,10 +122,10 @@ Perfect for web applications or event-driven systems. Set `:async t` to enable n
 (defun test-async-select ()
   (bb:catcher
    (bb:alet* ((response
-                      (select *test-table*
-                              :fields #("field-1" "field-2" "field-3" "field-4")
-                              :async t))
-                     (response-string (write-json response nil)))
+                 (select *test-table*
+                         :fields #("field-1" "field-2" "field-3" "field-4")
+                         :async t))
+              (response-string (write-json response nil)))
      (print response-string))
    (error (e) (format t "Error in test-async-select: ~a~%" e))))
 (as:start-event-loop (lambda () (test-async-select)) :catch-app-errors t)
@@ -153,13 +153,13 @@ Perfect for web applications or event-driven systems. Set `:async t` to enable n
       (lambda (params)
         (declare (ignore params))
         (lambda (responder)
-          (blackbird:catcher
-           (blackbird:alet* ((records
-                              (-> *test-table*
-                                  (select :fields #("field-1" "field-2" "field-3" "field-4")
-                                          :max-records 20
-                                          :async t)))
-                             (records-string (shasht:write-json records nil)))
+          (bb:catcher
+           (bb:alet* ((records
+                        (-> *test-table*
+                            (select :fields #("field-1" "field-2" "field-3" "field-4")
+                                    :max-records 20
+                                    :async t)))
+                      (records-string (shasht:write-json records nil)))
              (funcall responder `(200 (:content-type "application/json") (,records-string))))
            (error (e) (format t "Error calling airtable-async-select: ~a~%" e))))))
 ```
